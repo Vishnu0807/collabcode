@@ -17,7 +17,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 # Defines bcrypt as our chosen password hashing algorithm
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# ---------------------------------------------------------
 # AUTHENTICATION FUNCTIONS
 # ---------------------------------------------------------
 
