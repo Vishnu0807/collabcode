@@ -1,0 +1,65 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/collabcode
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=super_secret_docker_key
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - collab_net
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    networks:
+      - collab_net
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - collab_net
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=collabcode
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - collab_net
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - collab_net
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./monitoring/grafana-dashboard.json:/var/lib/grafana/dashboards/grafana-dashboard.json
+    ports:
+      - "3001:3000"
+    networks:
+      - collab_net
+
+volumes:
+  pgdata:
+
+networks:
+  collab_net:

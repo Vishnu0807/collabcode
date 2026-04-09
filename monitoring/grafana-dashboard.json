@@ -1,0 +1,17 @@
+{
+  "title": "CollabCode Real-time Metrics",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Active Connections",
+      "targets": [{"expr": "active_connections"}],
+      "gridPos": {"x": 0, "y": 0, "w": 8, "h": 8}
+    },
+    {
+      "type": "timeseries",
+      "title": "Total Messages Sent",
+      "targets": [{"expr": "rate(messages_total[1m])"}],
+      "gridPos": {"x": 8, "y": 0, "w": 16, "h": 8}
+    }
+  ]
+}

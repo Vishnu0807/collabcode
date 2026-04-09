@@ -1,21 +1,19 @@
 # crdt.py
+# Core Conflict-free Replicated Data Type engine for concurrent editing.
+# Ensures that characters inserted concurrently always arrive at the same final state.
 
 # Inserts a character into the document after the specified after_id.
-# Handles conflicts at the same position by sorting lexicographically by ID.
+# Handles conflicts by sorting lexicographically by ID if inserted concurrently.
 def insert(doc, char_obj, after_id):
-    if after_id is None:
-        idx = 0
-    else:
-        idx = -1
+    idx = 0 if after_id is None else -1
+    if after_id is not None:
         for i, c in enumerate(doc):
             if c['id'] == after_id:
                 idx = i + 1
                 break
-        if idx == -1:
-            return  # after_id not found
+        if idx == -1: return
 
-    # Conflict resolution: skip past elements with a 'greater' ID to maintain 
-    # a consistent order across all clients when inserts happen concurrently.
+    # Conflict resolution: skip elements with greater IDs.
     while idx < len(doc) and doc[idx]['id'] > char_obj['id']:
         idx += 1
         
